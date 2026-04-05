@@ -7,48 +7,43 @@
 ## 🧠 Application Architecture
 
 ```mermaid
-flowchart TD
-  %% Custom Styles
-  classDef app fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b
-  classDef front fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
-  classDef back fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100
-  classDef core fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c
-  classDef data fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#b71c1c
+flowchart LR
+    %% Client Layer
+    subgraph Client [Frontend Interface]
+        UI([Web Dashboard & Tools])
+        Cam([Live Camera Feed])
+    end
 
-  App((GYM-BUDDY App)):::app
+    %% Web Server Layer
+    subgraph Server [Backend Flask Server]
+        API((RESTful APIs))
+        Auth((Sessions & Auth))
+        GymSim((Smart Gym Manager))
+    end
 
-  subgraph Frontend [Frontend Layer UI]
-    F1[Dashboard Analytics]:::front
-    F2[Video Feed Container]:::front
-    F3[Chat Interface]:::front
-    F4[Gym Maps & Smart Equip]:::front
-  end
+    %% AI & Processing Layer
+    subgraph AI [AI Processing Engine]
+        CV{OpenCV + MediaPipe}
+        NLP{NLP Intent Engine}
+        Logic{Habits & Streaks}
+    end
 
-  subgraph Backend [Backend API Flask]
-    B1[Auth & User Sessions]:::back
-    B2[API Routing RESTful]:::back
-    B3[Smart Gym Simulation]:::back
-  end
+    %% Database Layer
+    subgraph Storage [Data Persistence]
+        DB[(SQLite Database)]
+        Logs[(Workout/Diet Logs)]
+    end
 
-  subgraph Logic [Core AI & Logic]
-    L1[MediaPipe Pose Recog]:::core
-    L2[OpenCV Computer Vision]:::core
-    L3[NLP Chatbot Intent]:::core
-    L4[Habit & Streak Logic]:::core
-  end
-
-  subgraph Data [Data Persistence]
-    D1[(SQLite Database)]:::data
-    D2[Workout & Diet Logs]:::data
-    D3[User Profiles & Goals]:::data
-    D4[Locations Directory]:::data
-  end
-
-  %% Layout Connections
-  App --> Frontend
-  Frontend <--> Backend
-  Backend <--> Logic
-  Backend <--> Data
+    %% Interactions
+    UI <-->|HTTP Requests| API
+    Cam -.->|Video Frames| CV
+    API <--> Auth
+    API <--> GymSim
+    API <-->|Queries| DB
+    API <-->|Logs| Logs
+    API <-->|Offloads NLP| NLP
+    CV -->|Pose & Reps| API
+    Logic -.-> DB
 ```
 
 ---
