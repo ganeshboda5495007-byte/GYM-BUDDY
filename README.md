@@ -9,36 +9,25 @@
 ```mermaid
 mindmap
   root(("GYM-BUDDY"))
-    :::rootClass
     Frontend("Frontend (Bootstrap/HTML/JS)")
-    :::frontClass
       Dashboard Analytics
       Video Feed Container
       Chat Interface
       Gym Maps & Smart Equipment
     Backend("Backend (Flask)")
-    :::backClass
       Authentication & User Sessions
       API Routing (RESTful)
       Smart Gym Status Simulation
     CoreAI("Core AI & Logic")
-    :::aiClass
       MediaPipe Pose Recognition
       Computer Vision (OpenCV)
       NLP Chatbot Intent Engine
       Habit & Streak Processing
     DataMgmt("Data Management")
-    :::dataClass
       SQLite Database
       Workout & Diet Logs
       User Profiles & Goals
       External Locations (Gyms)
-
-  classDef rootClass fill:#ff5722,color:#fff,stroke:#ff5722,stroke-width:2px
-  classDef frontClass fill:#2196f3,color:#fff,stroke:#2196f3,stroke-width:2px
-  classDef backClass fill:#4caf50,color:#fff,stroke:#4caf50,stroke-width:2px
-  classDef aiClass fill:#9c27b0,color:#fff,stroke:#9c27b0,stroke-width:2px
-  classDef dataClass fill:#ffc107,color:#000,stroke:#ffc107,stroke-width:2px
 ```
 
 ---
