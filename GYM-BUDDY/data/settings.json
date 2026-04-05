@@ -1,0 +1,13 @@
+{
+    "username": "Ganesh",
+    "height": 170,
+    "weight": 70,
+    "age": 25,
+    "gender": "male",
+    "activity_level": "moderate",
+    "theme": "dark",
+    "notifications": true,
+    "units": "metric",
+    "daily_goal": 30,
+    "sound_effects": true
+}

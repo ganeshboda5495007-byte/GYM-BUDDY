@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Gym - AI Gym & Fitness{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="mb-4 text-center">
+            <i class="bi bi-cpu text-cyan"></i> Smart Gym Assistant
+        </h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="display-4">{{ summary.total_equipment }}</h2>
+                        <p class="mb-0">Total Equipment</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="display-4 text-success">{{ summary.available }}</h2>
+                        <p class="mb-0">Available</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="display-4 text-warning">{{ summary.in_use }}</h2>
+                        <p class="mb-0">In Use</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="display-4 text-danger">{{ summary.maintenance }}</h2>
+                        <p class="mb-0">Maintenance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mb-3"><i class="bi bi-dpad"></i> Equipment Status</h3>
+        <div class="row g-4" id="equipmentList">
+            {% for eq in summary.equipment %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>{{ eq.name }}</span>
+                        <span class="badge bg-{{ 'success' if eq.status == 'available' else 'warning' if eq.status == 'in_use' else 'danger' }}">
+                            {{ eq.status|upper }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-clock"></i> Usage: {{ eq.usage_hours }} hours
+                        </p>
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-tools"></i> Last maintenance: {{ eq.last_maintenance }}
+                        </p>
+                        <div class="mb-2">
+                            <strong class="small">Smart Features:</strong>
+                            <ul class="list-unstyled small">
+                                {% for feature in eq.smart_features %}
+                                <li><i class="bi bi-check2 text-success"></i> {{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="current-settings">
+                            <strong class="small">Current Settings:</strong>
+                            <div class="row small">
+                                {% for key, value in eq.current_settings.items() %}
+                                <div class="col-6">{{ key|title }}: {{ value }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <button class="btn btn-sm btn-outline-primary smart-adjust-btn" data-id="{{ eq.equipment_id }}">
+                            <i class="bi bi-magic"></i> Smart Adjust
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="card mt-4" id="recommendationCard" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-robot"></i> AI Recommendations</h5>
+            </div>
+            <div class="card-body" id="recommendationContent">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.smart-adjust-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const equipmentId = btn.dataset.id;
+        
+        try {
+            const response = await fetch('/api/smartgym/adjust', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ equipment_id: equipmentId })
+            });
+            
+            const data = await response.json();
+            
+            const recCard = document.getElementById('recommendationCard');
+            const recContent = document.getElementById('recommendationContent');
+            
+            let adjustmentsHtml = '<div class="row">';
+            for (const [key, value] of Object.entries(data.adjustments)) {
+                if (!key.endsWith('_change')) {
+                    const change = data.adjustments[key + '_change'] || '';
+                    adjustmentsHtml += `
+                        <div class="col-md-4 mb-2">
+                            <strong>${key.replace('_', ' ').title()}:</strong> ${value} 
+                            <span class="text-${change.startsWith('+') ? 'success' : 'danger'}">${change}</span>
+                        </div>
+                    `;
+                }
+            }
+            adjustmentsHtml += '</div>';
+            
+            recContent.innerHTML = `
+                <h5>${data.reason}</h5>
+                <p class="text-success"><i class="bi bi-lightning-charge"></i> ${data.estimated_benefit}</p>
+                ${adjustmentsHtml}
+            `;
+            
+            recCard.style.display = 'block';
+            recCard.scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to get recommendations. Please try again.');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Performance - AI Gym & Fitness{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <h1 class="mb-4 text-center">
+            <i class="bi bi-graph-up text-primary"></i> Performance Analyzer
+        </h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card bg-gradient-1">
+                    <div class="card-body text-center">
+                        <div class="performance-circle mx-auto mb-3" data-score="{{ report.score }}">
+                            <span class="score-value">{{ report.score }}</span>
+                        </div>
+                        <h5>Performance Score</h5>
+                        <span class="badge bg-{{ 'success' if report.score >= 70 else 'warning' if report.score >= 40 else 'danger' }}">
+                            {{ report.status }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card bg-gradient-2 h-100">
+                    <div class="card-body text-center">
+                        <h2 class="display-1 mb-2">
+                            {% if report.trend == 'improving' %}📈{% elif report.trend == 'declining' %}📉{% else %}➡️{% endif %}
+                        </h2>
+                        <h5 class="text-capitalize">{{ report.trend }}</h5>
+                        <p class="small text-muted mb-0">Weekly Trend</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card bg-gradient-3 h-100">
+                    <div class="card-body text-center">
+                        <h2 class="display-1 mb-2">💪</h2>
+                        <h5>{{ report.workouts_this_week }}</h5>
+                        <p class="small text-muted mb-0">Workouts This Week</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Daily Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    {% for score in report.daily_scores %}
+                    <div class="col">
+                        <div class="progress-circle mx-auto" data-score="{{ score }}">
+                            <span>{{ score }}</span>
+                        </div>
+                        <small class="text-muted">{{ ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][loop.index0] if loop.index0 < 7 else 'Day' }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clipboard-data"></i> Weekly Report</h5>
+            </div>
+            <div class="card-body">
+                <h4 class="text-center mb-3">{{ report.message }}</h4>
+                
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <h3 class="text-primary">{{ report.completion_rate }}%</h3>
+                            <p class="mb-0">Completion Rate</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <h3 class="text-success">{{ report.workouts_this_week }}/7</h3>
+                            <p class="mb-0">Workouts Done</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <h3 class="text-warning">{{ report.score }}/100</h3>
+                            <p class="mb-0">Avg Score</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-lightbulb"></i> AI Recommendations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% for rec in report.recommendations %}
+                    <li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        {{ rec }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.performance-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #198754 {{ report.score * 3.6 }}deg,
+        #dee2e6 0deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.performance-circle::before {
+    content: '';
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    background: white;
+    border-radius: 50%;
+}
+
+.performance-circle .score-value {
+    position: relative;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.progress-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #198754 {{ (score or 0) * 3.6 }}deg,
+        #dee2e6 0deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+</style>
+
+<script>
+document.querySelectorAll('.progress-circle').forEach(circle => {
+    const score = parseInt(circle.dataset.score);
+    if (score === 0) {
+        circle.style.background = '#dc3545';
+        circle.style.color = 'white';
+    }
+});
+</script>
+{% endblock %}

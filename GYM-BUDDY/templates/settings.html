@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - AI Gym & Fitness{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4 text-center">
+            <i class="bi bi-gear text-secondary"></i> Settings
+        </h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person"></i> Profile Settings</h5>
+            </div>
+            <div class="card-body">
+                <form id="settingsForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" value="{{ settings.username if settings else 'User' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Units</label>
+                            <select class="form-select" id="units">
+                                <option value="metric" {{ 'selected' if settings and settings.units == 'metric' else '' }}>Metric (kg, cm)</option>
+                                <option value="imperial" {{ 'selected' if settings and settings.units == 'imperial' else '' }}>Imperial (lb, ft)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" class="form-control" id="height" value="{{ settings.height if settings else 170 }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="weight" value="{{ settings.weight if settings else 70 }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" value="{{ settings.age if settings else 25 }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Activity Level</label>
+                            <select class="form-select" id="activity_level">
+                                <option value="sedentary" {{ 'selected' if settings and settings.activity_level == 'sedentary' else '' }}>Sedentary</option>
+                                <option value="light" {{ 'selected' if settings and settings.activity_level == 'light' else '' }}>Light</option>
+                                <option value="moderate" {{ 'selected' if settings and settings.activity_level == 'moderate' else '' }}>Moderate</option>
+                                <option value="active" {{ 'selected' if settings and settings.activity_level == 'active' else '' }}>Active</option>
+                                <option value="very_active" {{ 'selected' if settings and settings.activity_level == 'very_active' else '' }}>Very Active</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Theme</label>
+                            <select class="form-select" id="theme">
+                                <option value="light" {{ 'selected' if settings and settings.theme == 'light' else '' }}>Light</option>
+                                <option value="dark" {{ 'selected' if settings and settings.theme == 'dark' else '' }}>Dark</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="notifications" {{ 'checked' if settings and settings.notifications else '' }}>
+                                <label class="form-check-label" for="notifications">Enable Notifications</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Danger Zone</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Reset all data including workout history and streaks. This action cannot be undone.</p>
+                <button class="btn btn-outline-danger" id="resetBtn">
+                    <i class="bi bi-trash"></i> Reset All Data
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const data = {
+        username: document.getElementById('username').value,
+        units: document.getElementById('units').value,
+        height: parseInt(document.getElementById('height').value),
+        weight: parseInt(document.getElementById('weight').value),
+        age: parseInt(document.getElementById('age').value),
+        activity_level: document.getElementById('activity_level').value,
+        theme: document.getElementById('theme').value,
+        notifications: document.getElementById('notifications').checked
+    };
+    
+    try {
+        const response = await fetch('/api/settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Settings saved successfully!');
+        } else {
+            alert('Failed to save settings');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred');
+    }
+});
+
+document.getElementById('resetBtn').addEventListener('click', async () => {
+    if (confirm('Are you sure you want to reset all data? This cannot be undone!')) {
+        try {
+            await fetch('/api/settings/reset', { method: 'POST' });
+            alert('Data reset successfully!');
+            location.reload();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+});
+</script>
+{% endblock %}

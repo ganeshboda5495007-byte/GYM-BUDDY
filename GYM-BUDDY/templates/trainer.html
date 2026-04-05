@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}AI Trainer - AI Gym & Fitness{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="mb-4 text-center">
+            <i class="bi bi-camera-video text-danger"></i> AI Workout Trainer
+        </h1>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-person-video"></i> Live Camera Feed</span>
+                        <span class="badge bg-light text-danger" id="cameraStatus">Inactive</span>
+                    </div>
+                    <div class="card-body p-0" style="background: #000; min-height: 450px;">
+                        <div class="camera-container" style="position: relative;">
+                            <img src="{{ url_for('video_feed') }}" id="videoFeed" class="img-fluid w-100" style="min-height: 450px; object-fit: cover;">
+                            <div id="cameraOverlay" class="camera-overlay text-center text-white p-4" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <i class="bi bi-camera-video-off display-1 mb-3"></i>
+                                <h4>Camera Inactive</h4>
+                                <p class="text-muted">Click "Start Workout" to begin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-list"></i> Select Exercise</h5>
+                    </div>
+                    <div class="card-body">
+                        <select class="form-select form-select-lg" id="exerciseSelect">
+                            <option value="head_rotation">Head Rotation</option>
+                            <option value="shoulder_shrug">Shoulder Shrug</option>
+                            <option value="arm_raise">Arm Raise</option>
+                            <option value="side_bend">Side Bend</option>
+                            <option value="neck_tilt">Neck Tilt</option>
+                            <option value="neck_rotation">Neck Rotation</option>
+                            <option value="squat">Squat</option>
+                            <option value="pushup">Pushup</option>
+                            <option value="jumping_jack">Jumping Jack</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="card border-danger mb-3">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="bi bi-123"></i> Rep Counter</h5>
+                    </div>
+                    <div class="card-body text-center py-4">
+                        <div class="display-1 fw-bold text-danger" id="repCount" style="font-size: 5rem;">0</div>
+                        <p class="text-muted mb-3">repetitions</p>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-danger progress-bar-striped progress-bar-animated" id="calorieBar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted" id="caloriesBurned">0 kcal burned</small>
+                    </div>
+                </div>
+                
+                <div class="card border-primary mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> How to Do</h5>
+                    </div>
+                    <div class="card-body" id="exerciseInstructions">
+                        <p><strong>Head Rotation:</strong></p>
+                        <ol class="mb-0">
+                            <li>Look <strong>LEFT</strong></li>
+                            <li>Look <strong>RIGHT</strong></li>
+                            <li>Repeat!</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-chat-left-text"></i> Feedback</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush" id="feedbackList">
+                            <li class="list-group-item text-center text-muted">
+                                <i class="bi bi-info-circle"></i> Select exercise & start
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 mt-3">
+                    <button class="btn btn-success btn-lg" id="startBtn">
+                        <i class="bi bi-play-circle"></i> Start Workout
+                    </button>
+                    <button class="btn btn-outline-secondary" id="resetBtn">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let statsInterval = null;
+let isActive = false;
+
+const exerciseInstructions = {
+    "head_rotation": {
+        title: "Head Rotation:",
+        steps: ["Look <strong>LEFT</strong>", "Look <strong>RIGHT</strong>", "Repeat!"]
+    },
+    "shoulder_shrug": {
+        title: "Shoulder Shrug:",
+        steps: ["Raise shoulders <strong>UP</strong>", "Lower shoulders <strong>DOWN</strong>", "Repeat!"]
+    },
+    "arm_raise": {
+        title: "Arm Raise:",
+        steps: ["Raise both arms <strong>UP</strong>", "Lower arms <strong>DOWN</strong>", "Repeat!"]
+    },
+    "wave_hand": {
+        title: "Wave Hand:",
+        steps: ["Wave your hand <strong>side to side</strong>", "Do 3-5 waves", "Count = 1 rep"]
+    },
+    "side_bend": {
+        title: "Side Bend:",
+        steps: ["Bend to <strong>LEFT</strong>", "Bend to <strong>RIGHT</strong>", "Repeat!"]
+    },
+    "neck_tilt": {
+        title: "Neck Tilt:",
+        steps: ["Tilt head <strong>LEFT</strong>", "Tilt head <strong>RIGHT</strong>", "Repeat!"]
+    },
+    "neck_rotation": {
+        title: "Neck Rotation:",
+        steps: ["Rotate neck <strong>LEFT</strong>", "Rotate neck <strong>RIGHT</strong>", "Repeat!"]
+    },
+    "squat": {
+        title: "Squat:",
+        steps: ["Squat <strong>DOWN</strong>", "Stand back <strong>UP</strong>", "Repeat!"]
+    },
+    "pushup": {
+        title: "Pushup:",
+        steps: ["Lower body <strong>DOWN</strong>", "Push back <strong>UP</strong>", "Repeat!"]
+    },
+    "jumping_jack": {
+        title: "Jumping Jack:",
+        steps: ["<strong>JUMP</strong> and spread arms", "Return to <strong>START</strong>", "Repeat!"]
+    }
+};
+
+function updateInstructions(exercise) {
+    const info = exerciseInstructions[exercise];
+    if (info) {
+        document.getElementById('exerciseInstructions').innerHTML = 
+            `<p><strong>${info.title}</strong></p><ol class="mb-0">` +
+            info.steps.map(s => `<li>${s}</li>`).join('') + '</ol>';
+    }
+}
+
+function updateStats() {
+    fetch('/api/trainer/stats')
+        .then(response => response.json())
+        .then(result => {
+            const data = result.data || result;
+            
+            document.getElementById('repCount').textContent = data.rep_count || 0;
+            document.getElementById('caloriesBurned').textContent = `${data.calories_burned || 0} kcal burned`;
+            
+            const caloriesPercent = Math.min((data.calories_burned || 0) * 10, 100);
+            document.getElementById('calorieBar').style.width = caloriesPercent + '%';
+            
+            const feedback = data.form_feedback || ['Start workout'];
+            const feedbackList = document.getElementById('feedbackList');
+            
+            if (Array.isArray(feedback) && feedback.length > 0) {
+                feedbackList.innerHTML = feedback.map(fb => 
+                    `<li class="list-group-item">
+                        <i class="bi bi-check-circle text-success me-2"></i>${fb}
+                    </li>`
+                ).join('');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+    const overlay = document.getElementById('cameraOverlay');
+    const status = document.getElementById('cameraStatus');
+    
+    if (!isActive) {
+        overlay.style.display = 'none';
+        status.textContent = 'Active';
+        status.className = 'badge bg-success';
+        document.getElementById('startBtn').innerHTML = '<i class="bi bi-pause-circle"></i> Running...';
+        isActive = true;
+        
+        if (statsInterval) clearInterval(statsInterval);
+        statsInterval = setInterval(updateStats, 500);
+        updateStats();
+    }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+    fetch('/api/trainer/reset', { method: 'POST' })
+        .then(() => {
+            document.getElementById('repCount').textContent = '0';
+            document.getElementById('caloriesBurned').textContent = '0 kcal burned';
+            document.getElementById('calorieBar').style.width = '0%';
+            document.getElementById('feedbackList').innerHTML = '<li class="list-group-item text-center text-success"><i class="bi bi-check-circle"></i> Reset!</li>';
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+document.getElementById('exerciseSelect').addEventListener('change', (e) => {
+    const exercise = e.target.value;
+    fetch('/api/trainer/exercise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ exercise })
+    })
+    .then(() => {
+        document.getElementById('repCount').textContent = '0';
+        document.getElementById('calorieBar').style.width = '0%';
+        document.getElementById('caloriesBurned').textContent = '0 kcal burned';
+        updateInstructions(exercise);
+        document.getElementById('feedbackList').innerHTML = '<li class="list-group-item text-center text-muted"><i class="bi bi-info-circle"></i> ' + exerciseInstructions[exercise].title + ' selected</li>';
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}

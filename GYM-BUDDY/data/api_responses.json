@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": 1,
+      "username": "User",
+      "avatar": null,
+      "created_at": "2026-01-01T00:00:00Z"
+    },
+    "stats": {
+      "streak": 5,
+      "score": 75,
+      "total_workouts": 42,
+      "calories_burned": 12500,
+      "minutes_exercised": 840
+    },
+    "today": {
+      "date": "2026-03-23",
+      "checked_in": false,
+      "workout_done": false,
+      "mood": null,
+      "calories_burned": 0,
+      "duration_minutes": 0
+    }
+  }
+}

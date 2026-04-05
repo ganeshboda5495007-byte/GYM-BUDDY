@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Gym & Fitness{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="welcome-section text-center mb-5">
+        <h1 class="display-4 mb-3">
+            <i class="bi bi-robot text-primary"></i> Welcome to AI Gym & Fitness
+        </h1>
+        <p class="lead text-muted">Your intelligent fitness companion powered by AI</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card stat-card bg-gradient-1">
+                <div class="card-body">
+                    <div class="stat-icon">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <h3 class="stat-number">{{ score }}</h3>
+                    <p class="stat-label">Performance Score</p>
+                    <a href="/performance" class="btn btn-light btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-gradient-2">
+                <div class="card-body">
+                    <div class="stat-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <h3 class="stat-number">{{ streak }}</h3>
+                    <p class="stat-label">Day Streak</p>
+                    <a href="/habit" class="btn btn-light btn-sm">Track Habits</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-gradient-3">
+                <div class="card-body">
+                    <div class="stat-icon">
+                        <i class="bi bi-calendar-week"></i>
+                    </div>
+                    <h3 class="stat-number">{{ weekly.total_workouts }}/7</h3>
+                    <p class="stat-label">Workouts This Week</p>
+                    <a href="/habit" class="btn btn-light btn-sm">View Calendar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-4"><i class="bi bi-grid-3x3-gap"></i> Quick Access</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <a href="/diet" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-egg-fried feature-icon text-success"></i>
+                        <h5>AI Dietician</h5>
+                        <p class="text-muted small">Personalized diet plans based on your BMI</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/trainer" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-camera-video feature-icon text-danger"></i>
+                        <h5>AI Gym Trainer</h5>
+                        <p class="text-muted small">Real-time pose detection and rep counting</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/chat" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-chat-dots feature-icon text-info"></i>
+                        <h5>Virtual Buddy</h5>
+                        <p class="text-muted small">AI-powered fitness chat companion</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/habit" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check feature-icon text-warning"></i>
+                        <h5>Habit Tracker</h5>
+                        <p class="text-muted small">Track your daily workout habits</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/performance" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up feature-icon text-primary"></i>
+                        <h5>Performance</h5>
+                        <p class="text-muted small">Track your fitness progress over time</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/gym" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building feature-icon text-purple"></i>
+                        <h5>Gym Finder</h5>
+                        <p class="text-muted small">Find the best gyms near you</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/smartgym" class="text-decoration-none">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-cpu feature-icon text-cyan"></i>
+                        <h5>Smart Gym</h5>
+                        <p class="text-muted small">AI-powered equipment recommendations</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <div class="card feature-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-gear feature-icon text-secondary"></i>
+                    <h5>More Coming</h5>
+                    <p class="text-muted small">New features in development</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if today.checked_in %}
+    <div class="alert alert-success mt-5" role="alert">
+        <i class="bi bi-check-circle"></i> You've already checked in today! Keep up the great work!
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-5" role="alert">
+        <i class="bi bi-info-circle"></i> Don't forget to log your workout today!
+        <a href="/habit" class="alert-link">Check in now</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
