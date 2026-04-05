@@ -1,16 +1,6 @@
-# 🏋️ GYM-BUDDY: AI Gym & Fitness Assistant
+# 🏋️ GYM-BUDDY: Comprehensive AI Fitness & Gym Assistant
 
-**AI Gym & Fitness Assistant** is a full-stack web application providing AI-powered tracking, diet planning, and gym recommendations. It uses advanced pose detection technology to give real-time feedback on your workout form.
-
----
-
-## 🚀 Features
-
-- **Real-Time Pose Detection**: Utilizes MediaPipe and OpenCV to accurately track and correct your exercise form.
-- **Diet Planning**: Personalized nutrition and meal recommendations to support your fitness goals.
-- **Gym Recommendations**: Tailored workout routines according to your physical capabilities and goals.
-- **Progress Tracking**: Persistent storage for all your routines and diet plans using an SQLite database.
-- **User-Friendly Dashboard**: Built with Bootstrap 5 on a robust Flask backend for a responsive experience.
+**GYM-BUDDY** is an advanced full-stack web ecosystem that serves as your all-in-one virtual fitness assistant. By combining computer vision, AI-driven chat, localized gym searching, and progress-tracking, it creates a personal training environment natively in your browser.
 
 ---
 
@@ -19,51 +9,91 @@
 ```mermaid
 mindmap
   root((GYM-BUDDY))
-    Frontend
-      Bootstrap 5 UI
-      Templates & Dashboards
-      Camera Feed Capture
+    Frontend (Bootstrap/HTML/JS)
+      Dashboard Analytics
+      Video Feed Container
+      Chat Interface
+      Gym Maps & Smart Equipment
     Backend (Flask)
-      app.py (Main Routing)
-      config.py (Configuration)
-      database.py (SQLite Operations)
-    AI Core
-      MediaPipe Pose Detection
-      OpenCV Video Processing
-      Form Correction Engine
-    Data Storage
-      SQLite DB
-      User Profiles
+      Authentication & User Sessions
+      API Routing (RESTful)
+      Smart Gym Status Simulation
+    Core AI & Logic
+      MediaPipe Pose Recognition
+      Computer Vision (OpenCV)
+      NLP Chatbot Intent Engine
+      Habit & Streak Processing
+    Data Management
+      SQLite Database
       Workout & Diet Logs
+      User Profiles & Goals
+      External Locations (Gyms)
 ```
+
+---
+
+## 🌟 Key Features
+
+### 1. 🤖 AI Personal Trainer (Real-Time Form Detection)
+Utilizing your web camera, the application captures video feeds and processes them using **MediaPipe** and **OpenCV**. It counts your repetitions and dynamically checks your posture format for exercises like squats or pushups.
+
+### 2. 🥗 Smart Diet & Nutrition Planner
+Generates completely personalized diet and meal plans. Calculates your BMI and caloric needs based on user stats (Height, Weight, Age, Diet Type) to help you consistently hit your fitness targets.
+
+### 3. 💬 AI Chat & Fitness Support
+Equipped with a robust intent-recognition fitness chatbot, handling dynamic Q&A about exercises, diets, or application navigation to keep you motivated.
+
+### 4. 📅 Habit & Progress Tracking
+Track your fitness consistency daily! Features include **Check-Ins**, **Mood Logging**, **Current Streak Management**, and visual **Performance Reports** over weekly metrics to solidify good habits.
+
+### 5. 📍 Local Gym Finder
+A location-based gym directory that allows users to filter gyms by available amenities, pricing, geolocation (latitude/longitude), and radius tracking. 
+
+### 6. 🏋️ Smart Gym Simulator
+A dedicated dashboard acting as a smart digital twin to physical gym equipment. Check the real-time status of connected machines, and simulate smart adjustments like treadmill speed directly from the dashboard!
+
+---
+
+## 🗺️ Project Roadmap
+
+- **[x] Phase 1 - Foundation:** Base Flask application, SQLite Database setup, Authentication (Login/Register).
+- **[x] Phase 2 - AI Integration:** Implementing OpenCV + MediaPipe for form tracking and rep counting.
+- **[x] Phase 3 - Daily Tracking & Nutrition:** Habit check-ins, streaks, graphical reports, and personalized BMI/Diet calculations.
+- **[x] Phase 4 - Gym Locator & Smart Equipment:** Building the gym discovery platform and simulating smart equipment adjustments.
+- **[ ] Phase 5 - Mobile Optimization:** Migrate core ML models to edge devices / PWA implementation for better mobile responsiveness.
+- **[ ] Phase 6 - Social & Leaderboards:** Connect with friends, verify physical challenges, and build a local community leaderboard.
+- **[ ] Phase 7 - Wearable Integrations:** Connect directly to Apple Health, Google Fit, and Garmin devices.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Python, Flask
-- **Frontend**: HTML5, Bootstrap 5, JavaScript
-- **AI & Computer Vision**: OpenCV, Google MediaPipe
-- **Database**: SQLite
+- **Backend**: Python, Flask, Flask-Login, SQLite
+- **Frontend**: HTML5, Vanilla JavaScript, Bootstrap 5 UI
+- **AI & Computer Vision**: OpenCV, Google MediaPipe Pose
+- **Data Serialization**: JSON / RESTful APIs
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-AI_Gym_Fitness/
-│
-├── app.py                 # Main Flask Application
-├── database.py            # SQLite Database Setup & Models
-├── config.py              # Application Configuration
-├── start_server.py        # Server Initialization Script
-├── requirements.txt       # Python Dependencies
-├── modules/               # Core Application Logic & AI processing
-├── templates/             # HTML Frontend Templates
-├── static/                # CSS, JS, and Image Assets
-├── data/                  # Local storage and exported metrics
+/
+├── app.py                 # Main Flask Application & Route Handlers
+├── database.py            # SQLite DB Initialization & Models
+├── config.py              # Global Application Configuration
+├── start_server.py        # Main Server Initialization Wrapper
+├── fix_db.py              # Script to reset/initialize DB
+├── modules/               # Core Application Logic (Auth, CV, Chat)
+├── templates/             # Jinja2 HTML Frontend Templates
+├── static/                # CSS Stylesheets, JS, and Images
+├── data/                  # Exported metrics and storage files
 └── docs/                  # Additional Documentation
 ```
 
-## 🚦 Getting Started
+---
+
+## 🚦 Getting Started (Installation & Setup)
 
 1. **Clone the repository**
    ```bash
@@ -71,32 +101,39 @@ AI_Gym_Fitness/
    cd GYM-BUDDY
    ```
 
-2. **Install the dependencies**
-   Make sure you have Python 3.8+ installed.
+2. **Set up Virtual Environment** (Optional but recommended)
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**
+   Requires Python 3.8+
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Initialize the Database** (if necessary)
+4. **Initialize Database**
+   (Creates the base tables and sets up SQLite file)
    ```bash
    python fix_db.py
    ```
 
-4. **Run the Application**
-   You can start the server via the batch or python script:
+5. **Start Application**
    ```bash
    python start_server.py
-   ```
-   Or explicitly just running the app:
-   ```bash
+   # Or alternatively:
    python app.py
    ```
 
-5. **Access the Web App**
-   Open your browser and navigate to `http://localhost:5000`.
+6. **Access the Web Interface**
+   Open your browser and navigate to `http://localhost:5000`
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for complete details.
