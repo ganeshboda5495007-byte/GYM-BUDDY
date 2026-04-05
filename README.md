@@ -4,40 +4,51 @@
 
 ---
 
-## 🧠 Application Architecture (Mind Map)
+## 🧠 Application Architecture
 
 ```mermaid
-graph LR
-  root(("GYM-BUDDY")):::rootClass
+flowchart TD
+  %% Custom Styles
+  classDef app fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b
+  classDef front fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
+  classDef back fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100
+  classDef core fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c
+  classDef data fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#b71c1c
 
-  root --- f["Frontend (Bootstrap/HTML/JS)"]:::frontClass
-  f --- f1["Dashboard Analytics"]
-  f --- f2["Video Feed Container"]
-  f --- f3["Chat Interface"]
-  f --- f4["Gym Maps & Smart Equip"]
+  App((GYM-BUDDY App)):::app
 
-  root --- b["Backend (Flask)"]:::backClass
-  b --- b1["Auth & User Sessions"]
-  b --- b2["API Routing (RESTful)"]
-  b --- b3["Smart Gym Simulation"]
+  subgraph Frontend [Frontend Layer UI]
+    F1[Dashboard Analytics]:::front
+    F2[Video Feed Container]:::front
+    F3[Chat Interface]:::front
+    F4[Gym Maps & Smart Equip]:::front
+  end
 
-  root --- c["Core AI & Logic"]:::aiClass
-  c --- c1["MediaPipe Pose Recog"]
-  c --- c2["OpenCV Computer Vision"]
-  c --- c3["NLP Chatbot Intent"]
-  c --- c4["Habit & Streak Logic"]
+  subgraph Backend [Backend API Flask]
+    B1[Auth & User Sessions]:::back
+    B2[API Routing RESTful]:::back
+    B3[Smart Gym Simulation]:::back
+  end
 
-  root --- d["Data Management"]:::dataClass
-  d --- d1["SQLite Database"]
-  d --- d2["Workout & Diet Logs"]
-  d --- d3["User Profiles & Goals"]
-  d --- d4["Locations Directory"]
+  subgraph Logic [Core AI & Logic]
+    L1[MediaPipe Pose Recog]:::core
+    L2[OpenCV Computer Vision]:::core
+    L3[NLP Chatbot Intent]:::core
+    L4[Habit & Streak Logic]:::core
+  end
 
-  classDef rootClass fill:#ff5722,color:#fff,stroke:#ff5722,stroke-width:2px;
-  classDef frontClass fill:#2196f3,color:#fff,stroke:#2196f3,stroke-width:2px;
-  classDef backClass fill:#4caf50,color:#fff,stroke:#4caf50,stroke-width:2px;
-  classDef aiClass fill:#9c27b0,color:#fff,stroke:#9c27b0,stroke-width:2px;
-  classDef dataClass fill:#ffc107,color:#000,stroke:#ffc107,stroke-width:2px;
+  subgraph Data [Data Persistence]
+    D1[(SQLite Database)]:::data
+    D2[Workout & Diet Logs]:::data
+    D3[User Profiles & Goals]:::data
+    D4[Locations Directory]:::data
+  end
+
+  %% Layout Connections
+  App --> Frontend
+  Frontend <--> Backend
+  Backend <--> Logic
+  Backend <--> Data
 ```
 
 ---
