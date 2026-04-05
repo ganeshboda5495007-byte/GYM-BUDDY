@@ -7,27 +7,37 @@
 ## 🧠 Application Architecture (Mind Map)
 
 ```mermaid
-mindmap
-  root(("GYM-BUDDY"))
-    Frontend("Frontend (Bootstrap/HTML/JS)")
-      Dashboard Analytics
-      Video Feed Container
-      Chat Interface
-      Gym Maps & Smart Equipment
-    Backend("Backend (Flask)")
-      Authentication & User Sessions
-      API Routing (RESTful)
-      Smart Gym Status Simulation
-    CoreAI("Core AI & Logic")
-      MediaPipe Pose Recognition
-      Computer Vision (OpenCV)
-      NLP Chatbot Intent Engine
-      Habit & Streak Processing
-    DataMgmt("Data Management")
-      SQLite Database
-      Workout & Diet Logs
-      User Profiles & Goals
-      External Locations (Gyms)
+graph LR
+  root(("GYM-BUDDY")):::rootClass
+
+  root --- f["Frontend (Bootstrap/HTML/JS)"]:::frontClass
+  f --- f1["Dashboard Analytics"]
+  f --- f2["Video Feed Container"]
+  f --- f3["Chat Interface"]
+  f --- f4["Gym Maps & Smart Equip"]
+
+  root --- b["Backend (Flask)"]:::backClass
+  b --- b1["Auth & User Sessions"]
+  b --- b2["API Routing (RESTful)"]
+  b --- b3["Smart Gym Simulation"]
+
+  root --- c["Core AI & Logic"]:::aiClass
+  c --- c1["MediaPipe Pose Recog"]
+  c --- c2["OpenCV Computer Vision"]
+  c --- c3["NLP Chatbot Intent"]
+  c --- c4["Habit & Streak Logic"]
+
+  root --- d["Data Management"]:::dataClass
+  d --- d1["SQLite Database"]
+  d --- d2["Workout & Diet Logs"]
+  d --- d3["User Profiles & Goals"]
+  d --- d4["Locations Directory"]
+
+  classDef rootClass fill:#ff5722,color:#fff,stroke:#ff5722,stroke-width:2px;
+  classDef frontClass fill:#2196f3,color:#fff,stroke:#2196f3,stroke-width:2px;
+  classDef backClass fill:#4caf50,color:#fff,stroke:#4caf50,stroke-width:2px;
+  classDef aiClass fill:#9c27b0,color:#fff,stroke:#9c27b0,stroke-width:2px;
+  classDef dataClass fill:#ffc107,color:#000,stroke:#ffc107,stroke-width:2px;
 ```
 
 ---
